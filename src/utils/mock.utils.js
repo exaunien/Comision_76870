@@ -22,7 +22,7 @@ export const generatePet = async () => {
     // Buscar todos los usuarios disponibles
     const users = await userModel.find();
     if (users.length === 0)
-        throw new Error('No hay usuarios para asignar pets');
+        throw new Error('No hay usuarios para asignar mascotas');
 
     // Elegir uno al azar
     const randomUser = faker.helpers.arrayElement(users);
@@ -38,8 +38,8 @@ export const generatePet = async () => {
 };
 // Ejecutar en un contexto async
 const main = async () => {
-    console.log(await generateUser());
-    console.log(await generatePet());
+    await generateUser();
+    await generatePet();
 };
 
 main();

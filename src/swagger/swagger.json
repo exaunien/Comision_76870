@@ -1,0 +1,347 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "My Backend-3-76870 API",
+        "version": "1.0.0",
+        "description": "API para gestionar usuarios y mascotas en una aplicación de adopción de mascotas."
+    },
+
+    "paths": {
+        "/api/users": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Obtener todos los usuarios",
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuarios obtenida exitosamente"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Users"],
+                "summary": "Crear un nuevo usuario",
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Datos del usuario a crear",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Usuario creado exitosamente"
+                    }
+                }
+            }
+        },
+        "/api/users/{uid}": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Obtener un usuario por ID",
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID del usuario a obtener"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario obtenido exitosamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                }
+            },
+
+            "put": {
+                "tags": ["Users"],
+                "summary": "Actualizar un usuario por ID",
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID del usuario a actualizar"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Datos del usuario a actualizar",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "first_name": { "type": "string" },
+                                "last_name": { "type": "string" },
+                                "email": { "type": "string" },
+                                "password": {
+                                    "type": "string",
+                                    "description": "Nueva contraseña en texto plano"
+                                },
+                                "role": {
+                                    "type": "string",
+                                    "enum": ["user", "admin"]
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado exitosamente"
+                    },
+                    "404": { "description": "Usuario no encontrado" }
+                }
+            },
+
+            "delete": {
+                "tags": ["Users"],
+                "summary": "Eliminar un usuario por ID",
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID del usuario a eliminar"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/pets": {
+            "get": {
+                "tags": ["Pets"],
+                "summary": "Obtener todas las mascotas",
+                "responses": {
+                    "200": {
+                        "description": "Lista de mascotas obtenida exitosamente"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Pets"],
+                "summary": "Crear una nueva mascota",
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Datos de la mascota a crear",
+                        "schema": { "$ref": "#/definitions/Pet" }
+                    }
+                ],
+                "responses": {
+                    "201": { "description": "Mascota creada exitosamente" }
+                }
+            }
+        },
+        "/api/pets/{pid}": {
+            "put": {
+                "tags": ["Pets"],
+                "summary": "Actualizar una mascota",
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "pid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID de la mascota a actualizar"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Datos a actualizar",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": { "type": "string" },
+                                "specie": { "type": "string" },
+                                "birthDate": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "adopted": { "type": "boolean" },
+                                "owner": { "type": "string" },
+                                "image": { "type": "string" }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mascota actualizada exitosamente"
+                    },
+                    "404": { "description": "Mascota no encontrada" }
+                }
+            },
+            "delete": {
+                "tags": ["Pets"],
+                "summary": "Eliminar una mascota",
+                "parameters": [
+                    {
+                        "name": "pid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID de la mascota a eliminar"
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "Mascota eliminada exitosamente" },
+                    "404": { "description": "Mascota no encontrada" }
+                }
+            },
+            "get": {
+                "tags": ["Pets"],
+                "summary": "Obtener una mascota por ID",
+                "parameters": [
+                    {
+                        "name": "pid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID de la mascota a obtener"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mascota obtenida exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/Pet"
+                        }
+                    },
+                    "404": {
+                        "description": "Mascota no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/adoptions": {
+            "get": {
+                "tags": ["Adoptions"],
+                "summary": "Obtener todas las adopciones",
+                "responses": {
+                    "200": {
+                        "description": "Listado de adopciones obtenido exitosamente",
+                        "schema": {
+                            "type": "array",
+                            "items": { "$ref": "#/definitions/Adoption" }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/adoptions/{aid}": {
+            "get": {
+                "tags": ["Adoptions"],
+                "summary": "Obtener una adopción por ID",
+                "parameters": [
+                    {
+                        "name": "aid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID de la adopción"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Adopción encontrada",
+                        "schema": { "$ref": "#/definitions/Adoption" }
+                    },
+                    "404": { "description": "Adopción no encontrada" }
+                }
+            }
+        },
+        "/api/adoptions/{uid}/{pid}": {
+            "post": {
+                "tags": ["Adoptions"],
+                "summary": "Crear una adopción",
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID del usuario adoptante"
+                    },
+                    {
+                        "name": "pid",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID de la mascota adoptada"
+                    }
+                ],
+                "responses": {
+                    "201": { "description": "Adopción creada exitosamente" },
+                    "404": { "description": "Usuario o mascota no encontrados" }
+                }
+            }
+        }
+    },
+
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "first_name": { "type": "string" },
+                "last_name": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" },
+                "role": {
+                    "type": "string",
+                    "enum": ["user", "admin"],
+                    "default": "user"
+                }
+            },
+            "required": ["first_name", "last_name", "email", "password"]
+        },
+        "Pet": {
+            "type": "object",
+            "properties": {
+                "name": { "type": "string" },
+                "specie": { "type": "string" },
+                "birthDate": { "type": "string", "format": "date" },
+                "adopted": { "type": "boolean", "default": false }
+            },
+            "required": ["name", "specie"]
+        },
+        "Adoption": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "ID de la adopción"
+                },
+                "owner": {
+                    "type": "string",
+                    "description": "ID del usuario adoptante (ref: Users)"
+                },
+                "pet": {
+                    "type": "string",
+                    "description": "ID de la mascota adoptada (ref: Pets)"
+                }
+            }
+        }
+    }
+}

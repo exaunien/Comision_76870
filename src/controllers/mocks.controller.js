@@ -5,7 +5,6 @@ const createUserMock = async (req, res) => {
         const { num } = req.query;
         const response = await UserServices.createUserMock(num);
         res.status(201).json(response);
-        console.log(response);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -25,7 +24,6 @@ const createPetMock = async (req, res) => {
         const { num } = req.query;
         const response = await UserServices.createPetMock(num);
         res.status(201).json(response);
-        console.log(response);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
