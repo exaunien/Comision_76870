@@ -13,10 +13,59 @@ get /pets lista las mascotas
 get /mockingPets crea las mascotas se le pasa por query la cantidad de mascotas que ¿se desean crear
 post /generaData genera las cantidades de usuarios y mascotas que se desean crear pasandole por query la cantidad para cada grupo
 
-## Docker Hub
+# Estructura del Test
+
+## Configuración Previa (beforeAll):
+
+Dado que una adopción requiere un usuario y una mascota existentes, el test crea dinámicamente estos recursos antes de iniciar las pruebas.
+
+Se almacenan los IDs generados (createdUserId, createdPetId) para ser utilizados en los endpoints de adopción.
+
+Casos de Éxito :
+
+POST /api/adoptions/:uid/:pid: Valida la creación de un vínculo de adopción. Se verifica que el status sea 200 y que la respuesta contenga el ID de la nueva adopción.
+
+GET /api/adoptions: Comprueba que el listado de adopciones funcione correctamente y que los campos owner (dueño) y pet (mascota) estén presentes, validando la lógica de Populate de Mongoose.
+
+GET /api/adoptions/:aid: Verifica la recuperación de una adopción específica mediante su ID único.
+
+Casos Negativos (Manejo de Errores):
+
+Se validan escenarios donde los recursos no existen (ID de usuario o mascota inexistentes), esperando respuestas de error controladas (Status 404). Esto asegura que la API no falle ante datos inválidos.
+
+Limpieza (afterAll):
+
+Se asegura el cierre de la conexión a la base de datos de MongoDB para evitar fugas de memoria y permitir que el proceso de Jest finalice correctamente.
+
+Herramientas Utilizadas
+Supertest: Para simular peticiones HTTP al servidor sin necesidad de levantarlo manualmente.
+
+Jest: Framework de testing para la ejecución y validación de aserciones.
+
+Mongoose: Para gestionar la persistencia y conexión con la base de datos de pruebas.
+
+# Docker Hub
+
+Para garantizar que la aplicación funcione de la misma manera en cualquier entorno (desarrollo, testing o producción), se ha creado una imagen de Docker.
+
+## Proceso de Construcción
+
+Para simplificar la configuración y el despliegue, el proyecto utiliza Docker Compose. Esto permite levantar tanto la API como la base de datos MongoDB con un único comando, sin necesidad de construir las imágenes manualmente por separado.
+
+## Imagen en Docker Hub
+
+docker-compose.yml se encarga de levantar los servicios necesarios para la aplicación: la API y la base de datos MongoDB.
+
+utilizamos el comando `docker-compose up -d --build` para construir y levantar los contenedores definidos en el archivo docker-compose.yml.
 
 La imagen oficial de la aplicación se encuentra disponible en:
 **Link:** [https://hub.docker.com/r/exaunicen/backend-3-76870]
+
+La imagen de este proyecto ha sido publicada en Docker Hub, lo que permite desplegar la aplicación en cualquier entorno sin necesidad de tener el código fuente localmente.
+
+Repositorio: exaunicen/backend-3-76870
+
+Etiqueta (Tag): latest
 
 ## Instrucciones de Ejecución
 

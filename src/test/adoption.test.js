@@ -53,6 +53,10 @@ describe('Test del Router adoptions', () => {
         );
 
         expect(result.status).toBe(200);
+        console.log(
+            'TEST 1 (POST): Adopción creada:',
+            JSON.stringify(result.body, null, 2),
+        );
 
         createdAdoptionId = result.body.payload?._id || result.body._id;
         expect(createdAdoptionId).toBeDefined();
@@ -62,6 +66,10 @@ describe('Test del Router adoptions', () => {
         const result = await requester.get('/api/adoptions');
 
         expect(result.status).toBe(200);
+        console.log(
+            'TEST 2 (GET ALL): Listado de adopciones:',
+            JSON.stringify(result.body, null, 2),
+        );
 
         const adoptionsList = result.body.payload
             ? result.body.payload
@@ -84,8 +92,45 @@ describe('Test del Router adoptions', () => {
         );
 
         expect(result.status).toBe(200);
+        console.log(
+            'TEST 3 (GET BY ID): Detalle de adopción:',
+            JSON.stringify(result.body, null, 2),
+        );
 
         const data = result.body.payload ? result.body.payload : result.body;
         expect(data).toHaveProperty('_id', createdAdoptionId);
+    });
+
+    // --- NUEVOS TESTS: CASOS NEGATIVOS ---
+
+    it('debe devolver 404 si el usuario no existe', async () => {
+        const fakeUserId = '65a6f1e5f1e5f1e5f1e5f1e5'; // ID con formato válido pero inexistente
+        const result = await requester.post(
+            `/api/adoptions/${fakeUserId}/${createdPetId}`,
+        );
+
+        console.log('TEST NEGATIVO 1 (User Not Found):', result.body);
+
+        expect(result.status).toBe(404);
+    });
+
+    it('debe devolver 404 si la mascota no existe', async () => {
+        const fakePetId = '65a6f1e5f1e5f1e5f1e5f1e5';
+        const result = await requester.post(
+            `/api/adoptions/${createdUserId}/${fakePetId}`,
+        );
+
+        console.log('TEST NEGATIVO 2 (Pet Not Found):', result.body);
+
+        expect(result.status).toBe(404);
+    });
+
+    it('debe devolver 404 si se busca una adopción con un ID inexistente', async () => {
+        const fakeAdoptionId = '65a6f1e5f1e5f1e5f1e5f1e5';
+        const result = await requester.get(`/api/adoptions/${fakeAdoptionId}`);
+
+        console.log('TEST NEGATIVO 3 (Adoption Not Found):', result.body);
+
+        expect(result.status).toBe(404);
     });
 });
