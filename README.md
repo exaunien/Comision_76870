@@ -13,6 +13,14 @@ get /pets lista las mascotas
 get /mockingPets crea las mascotas se le pasa por query la cantidad de mascotas que ¿se desean crear
 post /generaData genera las cantidades de usuarios y mascotas que se desean crear pasandole por query la cantidad para cada grupo
 
+# Documentación de la API
+
+La API cuenta con documentación interactiva generada con Swagger. Puedes explorar los endpoints, ver los modelos de datos y realizar peticiones directamente desde el navegador.
+
+- **Swagger UI:** [http://localhost:8080/api/docs](http://localhost:8080/api/docs)
+
+![Swagger UI Screenshot](./public/img/Screenshot_5.png)
+
 # Estructura del Test
 
 ## Configuración Previa (beforeAll):
