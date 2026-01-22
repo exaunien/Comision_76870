@@ -3,39 +3,115 @@
     "info": {
         "title": "My Backend-3-76870 API",
         "version": "1.0.0",
-        "description": "API para gestionar usuarios y mascotas en una aplicación de adopción de mascotas."
+        "description": "API para gestionar usuarios, mascotas y autenticación en una aplicación de adopción."
     },
-
+    "securityDefinitions": {
+        "cookieAuth": {
+            "type": "apiKey",
+            "name": "coderCookieToken",
+            "in": "cookie",
+            "description": "Token JWT almacenado en una cookie httpOnly."
+        }
+    },
     "paths": {
         "/api/users": {
             "get": {
                 "tags": ["Users"],
                 "summary": "Obtener todos los usuarios",
-                "produces": ["application/json"],
                 "responses": {
                     "200": {
                         "description": "Lista de usuarios obtenida exitosamente"
                     }
                 }
-            },
+            }
+        },
+        "/api/users/register": {
             "post": {
                 "tags": ["Users"],
-                "summary": "Crear un nuevo usuario",
-                "consumes": ["application/json"],
+                "summary": "Registrar un nuevo usuario",
                 "parameters": [
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "Datos del usuario a crear",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/User" }
+                    }
+                ],
+                "responses": {
+                    "201": { "description": "Usuario registrado exitosamente" },
+                    "400": {
+                        "description": "Datos inválidos o usuario ya existe"
+                    }
+                }
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "tags": ["Users"],
+                "summary": "Iniciar sesión y obtener cookie",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example": "test@test.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "123456"
+                                }
+                            }
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Usuario creado exitosamente"
+                    "200": { "description": "Login exitoso, cookie generada" },
+                    "401": { "description": "Credenciales inválidas" }
+                }
+            }
+        },
+        "/api/users/profile": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Obtener perfil del usuario logueado",
+                "security": [{ "cookieAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Datos del perfil retornados correctamente"
+                    },
+                    "401": { "description": "No autorizado / Sin token" }
+                }
+            }
+        },
+        "/api/users/restore-password": {
+            "put": {
+                "tags": ["Users"],
+                "summary": "Restablecer contraseña de usuario",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": { "type": "string" },
+                                "password": {
+                                    "type": "string",
+                                    "description": "Nueva contraseña"
+                                }
+                            }
+                        }
                     }
+                ],
+                "responses": {
+                    "200": { "description": "Contraseña actualizada" },
+                    "404": { "description": "Usuario no encontrado" }
                 }
             }
         },
@@ -48,81 +124,47 @@
                         "name": "uid",
                         "in": "path",
                         "required": true,
-                        "type": "string",
-                        "description": "ID del usuario a obtener"
+                        "type": "string"
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Usuario obtenido exitosamente"
-                    },
-                    "404": {
-                        "description": "Usuario no encontrado"
-                    }
+                    "200": { "description": "Usuario obtenido" },
+                    "404": { "description": "No encontrado" }
                 }
             },
-
             "put": {
                 "tags": ["Users"],
-                "summary": "Actualizar un usuario por ID",
-                "consumes": ["application/json"],
+                "summary": "Actualizar usuario",
                 "parameters": [
                     {
                         "name": "uid",
                         "in": "path",
                         "required": true,
-                        "type": "string",
-                        "description": "ID del usuario a actualizar"
+                        "type": "string"
                     },
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "Datos del usuario a actualizar",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "first_name": { "type": "string" },
-                                "last_name": { "type": "string" },
-                                "email": { "type": "string" },
-                                "password": {
-                                    "type": "string",
-                                    "description": "Nueva contraseña en texto plano"
-                                },
-                                "role": {
-                                    "type": "string",
-                                    "enum": ["user", "admin"]
-                                }
-                            }
-                        }
+                        "schema": { "$ref": "#/definitions/UserUpdate" }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Usuario actualizado exitosamente"
-                    },
-                    "404": { "description": "Usuario no encontrado" }
+                    "200": { "description": "Actualizado" }
                 }
             },
-
             "delete": {
                 "tags": ["Users"],
-                "summary": "Eliminar un usuario por ID",
+                "summary": "Eliminar usuario",
                 "parameters": [
                     {
                         "name": "uid",
                         "in": "path",
                         "required": true,
-                        "type": "string",
-                        "description": "ID del usuario a eliminar"
+                        "type": "string"
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Usuario eliminado exitosamente"
-                    },
-                    "404": {
-                        "description": "Usuario no encontrado"
-                    }
+                    "200": { "description": "Eliminado" }
                 }
             }
         },
@@ -130,217 +172,57 @@
             "get": {
                 "tags": ["Pets"],
                 "summary": "Obtener todas las mascotas",
-                "responses": {
-                    "200": {
-                        "description": "Lista de mascotas obtenida exitosamente"
-                    }
-                }
+                "responses": { "200": { "description": "Lista de mascotas" } }
             },
             "post": {
                 "tags": ["Pets"],
-                "summary": "Crear una nueva mascota",
-                "consumes": ["application/json"],
+                "summary": "Crear mascota",
                 "parameters": [
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "Datos de la mascota a crear",
                         "schema": { "$ref": "#/definitions/Pet" }
                     }
                 ],
-                "responses": {
-                    "201": { "description": "Mascota creada exitosamente" }
-                }
-            }
-        },
-        "/api/pets/{pid}": {
-            "put": {
-                "tags": ["Pets"],
-                "summary": "Actualizar una mascota",
-                "consumes": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "pid",
-                        "in": "path",
-                        "required": true,
-                        "type": "string",
-                        "description": "ID de la mascota a actualizar"
-                    },
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "description": "Datos a actualizar",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": { "type": "string" },
-                                "specie": { "type": "string" },
-                                "birthDate": {
-                                    "type": "string",
-                                    "format": "date"
-                                },
-                                "adopted": { "type": "boolean" },
-                                "owner": { "type": "string" },
-                                "image": { "type": "string" }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Mascota actualizada exitosamente"
-                    },
-                    "404": { "description": "Mascota no encontrada" }
-                }
-            },
-            "delete": {
-                "tags": ["Pets"],
-                "summary": "Eliminar una mascota",
-                "parameters": [
-                    {
-                        "name": "pid",
-                        "in": "path",
-                        "required": true,
-                        "type": "string",
-                        "description": "ID de la mascota a eliminar"
-                    }
-                ],
-                "responses": {
-                    "200": { "description": "Mascota eliminada exitosamente" },
-                    "404": { "description": "Mascota no encontrada" }
-                }
-            },
-            "get": {
-                "tags": ["Pets"],
-                "summary": "Obtener una mascota por ID",
-                "parameters": [
-                    {
-                        "name": "pid",
-                        "in": "path",
-                        "required": true,
-                        "type": "string",
-                        "description": "ID de la mascota a obtener"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Mascota obtenida exitosamente",
-                        "schema": {
-                            "$ref": "#/definitions/Pet"
-                        }
-                    },
-                    "404": {
-                        "description": "Mascota no encontrada"
-                    }
-                }
+                "responses": { "201": { "description": "Creada" } }
             }
         },
         "/api/adoptions": {
             "get": {
                 "tags": ["Adoptions"],
                 "summary": "Obtener todas las adopciones",
-                "responses": {
-                    "200": {
-                        "description": "Listado de adopciones obtenido exitosamente",
-                        "schema": {
-                            "type": "array",
-                            "items": { "$ref": "#/definitions/Adoption" }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/adoptions/{aid}": {
-            "get": {
-                "tags": ["Adoptions"],
-                "summary": "Obtener una adopción por ID",
-                "parameters": [
-                    {
-                        "name": "aid",
-                        "in": "path",
-                        "required": true,
-                        "type": "string",
-                        "description": "ID de la adopción"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Adopción encontrada",
-                        "schema": { "$ref": "#/definitions/Adoption" }
-                    },
-                    "404": { "description": "Adopción no encontrada" }
-                }
-            }
-        },
-        "/api/adoptions/{uid}/{pid}": {
-            "post": {
-                "tags": ["Adoptions"],
-                "summary": "Crear una adopción",
-                "parameters": [
-                    {
-                        "name": "uid",
-                        "in": "path",
-                        "required": true,
-                        "type": "string",
-                        "description": "ID del usuario adoptante"
-                    },
-                    {
-                        "name": "pid",
-                        "in": "path",
-                        "required": true,
-                        "type": "string",
-                        "description": "ID de la mascota adoptada"
-                    }
-                ],
-                "responses": {
-                    "201": { "description": "Adopción creada exitosamente" },
-                    "404": { "description": "Usuario o mascota no encontrados" }
-                }
+                "responses": { "200": { "description": "Listado obtenido" } }
             }
         }
     },
-
     "definitions": {
         "User": {
+            "type": "object",
+            "required": ["first_name", "last_name", "email", "password"],
+            "properties": {
+                "first_name": { "type": "string" },
+                "last_name": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+            }
+        },
+        "UserUpdate": {
             "type": "object",
             "properties": {
                 "first_name": { "type": "string" },
                 "last_name": { "type": "string" },
                 "email": { "type": "string" },
-                "password": { "type": "string" },
-                "role": {
-                    "type": "string",
-                    "enum": ["user", "admin"],
-                    "default": "user"
-                }
-            },
-            "required": ["first_name", "last_name", "email", "password"]
+                "role": { "type": "string", "enum": ["user", "admin"] }
+            }
         },
         "Pet": {
             "type": "object",
+            "required": ["name", "specie"],
             "properties": {
                 "name": { "type": "string" },
                 "specie": { "type": "string" },
                 "birthDate": { "type": "string", "format": "date" },
                 "adopted": { "type": "boolean", "default": false }
-            },
-            "required": ["name", "specie"]
-        },
-        "Adoption": {
-            "type": "object",
-            "properties": {
-                "_id": {
-                    "type": "string",
-                    "description": "ID de la adopción"
-                },
-                "owner": {
-                    "type": "string",
-                    "description": "ID del usuario adoptante (ref: Users)"
-                },
-                "pet": {
-                    "type": "string",
-                    "description": "ID de la mascota adoptada (ref: Pets)"
-                }
             }
         }
     }

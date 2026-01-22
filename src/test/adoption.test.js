@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import mongoose from 'mongoose'; // Importante para cerrar la conexión
 import app from '../app.js';
+import { seedDatabase } from '../utils/seeder.js';
 
 describe('Test del Router adoptions', () => {
     const requester = request(app);
@@ -22,7 +23,7 @@ describe('Test del Router adoptions', () => {
             email: `test${Date.now()}@mail.com`,
             password: '123',
         };
-        const uRes = await requester.post('/api/users').send(user);
+        const uRes = await requester.post('/api/users/register').send(user);
         createdUserId = uRes.body.payload?._id || uRes.body._id;
 
         // 2. Crear Mascota

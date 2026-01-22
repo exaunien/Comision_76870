@@ -19,12 +19,13 @@ export const generateUser = async () => {
 };
 
 export const generatePet = async () => {
-    // Buscar todos los usuarios disponibles
     const users = await userModel.find();
-    if (users.length === 0)
-        throw new Error('No hay usuarios para asignar mascotas');
-
-    // Elegir uno al azar
+    if (users.length === 0) {
+        console.log(
+            'Esperando a que se creen usuarios para asignar mascotas...',
+        );
+        return;
+    }
     const randomUser = faker.helpers.arrayElement(users);
 
     return {
