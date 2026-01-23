@@ -67,7 +67,7 @@ docker-compose.yml se encarga de levantar los servicios necesarios para la aplic
 utilizamos el comando `docker-compose up -d --build` para construir y levantar los contenedores definidos en el archivo docker-compose.yml.
 
 La imagen oficial de la aplicación se encuentra disponible en:
-**Link:** [https://hub.docker.com/r/exaunicen/backend-3-76870]
+**Link:** [https://hub.docker.com/repository/docker/exaunicen/backend-3-76870/tags]
 
 La imagen de este proyecto ha sido publicada en Docker Hub, lo que permite desplegar la aplicación en cualquier entorno sin necesidad de tener el código fuente localmente.
 
