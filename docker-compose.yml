@@ -1,21 +1,22 @@
 services:
-  # Servicio de la Base de Datos
   mongodb:
     image: mongo:latest
     container_name: mongo_db
     ports:
-      - "27017:27017"
+      - "27017:27017" # Esto permite que Compass (desde fuera de Docker) se conecte
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password123
     volumes:
       - mongo_data:/data/db
 
-  # Servicio de tu aplicación Node.js
   app:
     build: .
     container_name: node_app
     ports:
       - "8080:8080"
     environment:
-      - MONGO_URL=mongodb://mongodb:27017/petsdb
+      - MONGO_URL=mongodb://admin:password123@mongodb:27017/petsdb?authSource=admin
       - PORT=8080
       - JWT_SECRET=Bariloche2023
     depends_on:

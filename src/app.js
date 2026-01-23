@@ -32,6 +32,11 @@ app.use('/api/mocks', mocksRouter);
 // Swagger setup
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.listen(PORT, () => console.log(`Servidor funcionado en puerto : ${PORT}`));
+// Solo levanta el puerto si NO estamos en modo test
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () =>
+        console.log(`Servidor funcionando en puerto: ${PORT}`),
+    );
+}
 
 export default app;

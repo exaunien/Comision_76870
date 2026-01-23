@@ -83,6 +83,8 @@ Para levantar el ecosistema completo (Aplicación + Base de Datos), seguir estos
 2. **Archivo de configuración:** Asegúrarse de tener el archivo `.env` en la raíz con las siguientes variables:
 
 ```env
+# Conexión para Docker (usando el nombre del servicio)
+MONGO_URL=mongodb://admin:password123@mongodb:27017/petsdb?authSource=admin
 PORT=8080
-MONGO_URI=mongodb://mongodb:27017/petsdb
+JWT_SECRET=Bariloche2023
 ```
