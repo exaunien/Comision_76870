@@ -19,7 +19,7 @@ La API cuenta con documentación interactiva generada con Swagger. Puedes explor
 
 - **Swagger UI:** [http://localhost:8080/api/docs](http://localhost:8080/api/docs)
 
-![Swagger UI Screenshot](./public/img/Screenshot_5.png)
+![Swagger UI Screenshot](./src/public/img/Screenshot_5.png)
 
 # Estructura del Test
 
